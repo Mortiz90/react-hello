@@ -1,4 +1,9 @@
-   
+   .background {    
+    width: 100%;
+    height: 100px;    
+    z-index: -1;
+    position: relative;
+   }
     .tubo {
         background: #222;
         width: 50px;
