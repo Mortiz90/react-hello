@@ -1,14 +1,38 @@
-import React from 'react'
-import TrafficLight from './TrafficLight.jsx'
-import trbackground from "../../img/trbackground.jpg"
+import React from "react";
 
-const home = () => {
-  return (
-	<div>
-		<TrafficLight/>
-		<img src={trbackground}/>      
-	</div>
-  )
-}
+//include images into your bundle
+import Navbar from './navbar';
+import Jumbotron from './jumbotron';
+import Card from './card';
+import Footer from './footer';
 
-export default home
+//create your first component
+const Home = () => {
+	return (
+	  <div>
+		<Navbar />
+		<div className="container mt-4">
+		<Jumbotron />
+		<div className="container mt-4">
+		  <div className="row">
+			<div className="col-md-3 mb-4">
+			  <Card image="https://picsum.photos/500/325"/>
+			</div>
+			<div className="col-md-3 mb-4">
+			  <Card image="https://picsum.photos/500/325"/>
+			</div>
+			<div className="col-md-3 mb-4">
+			  <Card image="https://picsum.photos/500/325"/>
+			</div>
+			<div className="col-md-3 mb-4">
+			  <Card image="https://picsum.photos/500/325"/>
+			</div>
+		  </div>
+		</div>
+		</div>
+		<Footer />
+	  </div>
+	);
+  };
+  
+  export default Home;
