@@ -1,39 +1,62 @@
-.traffic-light-top {
-    width: 18px;
-    height: 120px;
-    background: black;
-    margin-left: 362px;
-}
-.traffic-light {
-    background: black;
-    padding: 10px;
-    display: inline-block;
-    border-radius: 15px;
-    margin-left:300px;
-}
-.light {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: blue;
-    margin: 10px;
+body {
+    margin-top: 100px;
 }
 
-.red { background-color: red; }
-.yellow { background-color: yellow; }
-.green { background-color: green; }
-.purple {background-color: purple;}
+.background {
+    background-color: gray;
+}
+  
+  .container {
+    border: 1px solid grey;
+    border-radius: 5px;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+  
+ul {
+    padding: 0px;
+    border: 1px solid gray;
+}
+  
+ul li {
+    border: 5px solid black;
+    list-style: none;
+    padding: 5px;
+    text-align: center;
+}
+  
+h1 {
+    text-align: center;
+    font-family: arial black, sans-serif;
+}
+  
+input {
+    border:2cm;
+    width: 100%;
+    text-align: center;
+}
+  
+i {
+    text-align: end;
+}
+  
+.todosLeft {
+text-align: center;
+}
 
-.buttonGroup {
-    float: left;
-    margin-left: 40px;
-    margin-top: 25px;
-}
-#cycleButton, #purpleButton {
-    display: block;
-    margin-top: 5px;
-}
 
-.glow {
-    box-shadow: 0px 0px 30px 4px white;
+.list-group-item {
+    position: relative;
 }
+  
+.list-group-item i {
+    visibility: hidden;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}
+  
+.list-group-item:hover i {
+    visibility: visible;
+}
+  

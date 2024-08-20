@@ -1,76 +1,133 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
+const Home = () => {
+  const [inputValue, setInputValue] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [data, setData] = useState([]);
 
-export function Home()  {
-	const [ selectedColor, setSelectedColor ] = useState("null");
-	const [ showPurple, setShowPurple ] = useState(false);
-	const [ cycleActive, setCycleActive ] = useState(false);
+  useEffect(() => {
+    // Update the API with the modified to-do list whenever todos change
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/salomon", {
+      method: "POST",
+      body: JSON.stringify([]),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(resp => {
+        console.log(resp.ok); // true if the response is successful
+        console.log(resp.status); // the status code (e.g., 200, 400, etc.)
+        console.log(resp.text()); // the response as text
+        return resp.json(); // parse the response as JSON and return a promise
+      })
+      .then(data => {
+        console.log(data); // the object received from the server
+      })
+      .catch(error => {
+        console.log(error); // error handling
+      });
+  }, []);
 
-	const togglePurple = () => {
-        setShowPurple(!showPurple);
-    };
+  useEffect(() => {
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/salomon", {
+      method: "PUT",
+      body: JSON.stringify([{ label: "Make the bed", done: false },
+      { label: "Walk for an hour", done: false },
+      { label: "Do the homework", done: false }]),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(resp => {
+        console.log(resp.ok); // true if the response is successful
+        console.log(resp.status); // the status code (e.g., 200, 400, etc.)
+        console.log(resp.text()); // the response as text
+      })
+      .then(data => {
+        console.log(data); // the object received from the server
+      })
+      .catch(error => {
+        console.log(error); // error handling
+      });
+    // Fetch the initial to-do list from the API
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/salomon")
+      .then(resp => resp.json())
+      .then(data => setTodos(data))
+      .catch(error => console.log(error));
+  }, []);
 
-	const cycleTrafficColors = () => {
-		if (cycleActive) {
-			if (selectedColor === "green") {
-				setSelectedColor("yellow");
-			} else if (selectedColor === "yellow") {
-				setSelectedColor("red");
-			} else if (selectedColor === "red") {
-				setSelectedColor("green");
-			}
-		}
-	};	
+  const addTodo = () => {
+    if (inputValue.trim() === "") return;
 
-	useEffect(() => {
-        const intervalId = setInterval(cycleTrafficColors, 1800);
+    // Create a new to-do object and update the todos state
+    const newTodo = { label: inputValue, done: false };
+    setTodos([...todos, newTodo]);
 
-        return () => clearInterval(intervalId);
-    }, [selectedColor]); 
+    // Clear the input field
+    setInputValue("");
+  };
 
-	const handleStartStopCycle = () => {
-		setCycleActive (!cycleActive);
-		if (!cycleActive) {
-			setSelectedColor("green");
-		}
-	};
+  const deleteTodo = index => {
+    // Remove the selected to-do from the todos state
+    const updatedTodos = todos.filter((_, currentIndex) => index !== currentIndex);
+    setTodos(updatedTodos);
+  };
 
+  const cleanAllTasks = () => {
+    // Delete the entire list from the server and update the todos state
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/salo", {
+      method: "DELETE"
+    })
+      .then(resp => resp.json())
+      .then(data => setTodos([]))
+      .catch(error => console.log(error));
+  };
 
-	return (
-		<div>
-			<span className="buttonGroup">
-				<button id="cycleButton" className="btn btn-dark" onClick={handleStartStopCycle}>
-					{cycleActive ? "Stop Traffic Light Cycle" : "Start Traffic Light Cycle"}
-				</button>
-				<button id="purpleButton" className="btn btn-dark" onClick={togglePurple}>
-					{showPurple ? "Hide Purple Circle" : "Show Purple Circle"}
-				</button>
-			</span>
-			<div className="traffic-light-container">
-				<div className="traffic-light-top"></div>
-				<div className="traffic-light">
-					<div
-						onClick={() => setSelectedColor("red")} 
-						className={"light red" + ((selectedColor === "red") ? " glow" : "")}>
-					</div>
-					<div 
-						onClick={() => setSelectedColor("yellow")} 
-						className={"light yellow" + ((selectedColor === "yellow") ? " glow" : "")}>
-					</div>
-					<div 
-						onClick={() => setSelectedColor("green")} 			
-						className={"light green" + ((selectedColor === "green") ? " glow" : "")}>	
-					</div>
-					{showPurple && (
-						<div
-							onClick={() => setSelectedColor("purple")}
-							className={"light purple" + ((selectedColor === "purple") ? " glow" : "")}
-						></div>
-					)}
-				</div>
-			</div>
-		</div>
-	);
-};
+  return (
+    <div>
+      <h1>todos</h1>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item">
+                <input
+                  type="text"
+                  onChange={(e) => setInputValue(e.target.value)}
+                  value={inputValue}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      addTodo();
+                    }
+                  }}
+                  placeholder="No tasks, add a task"
+                />
+              </li>
+              {todos.map((item, index) => (
+                <li
+                  key={index}
+                  style={{ display: "flex", alignItems: "center" }}
+                  className="list-group-item"
+                >
+                  <span style={{ flexGrow: 1 }}>{item.label}</span>
+                  <i
+                    className="fas fa-times"
+                    onClick={() => deleteTodo(index)}
+                  ></i>
+                </li>
+              ))}
+              <div className="todosLeft">{todos.length} tasks left</div>
+              {todos.length > 0 && (
+                <button className="btn btn-secondary" onClick={cleanAllTasks}>
+                  Clean All Tasks
+                </button>                
+              )}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default Home;
